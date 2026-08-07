@@ -13,6 +13,39 @@ const userList = [
 	{ name: "Mary Tyler", role: "organiser" }
 ];
 
+const defaultEvents = [
+	{
+		name: "WebDev Workshop",
+		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
+		organiser: "John Smith",
+		participants: ["Alice"]
+	},
+	{
+		name: "Open Lecture: Statistics and AI",
+		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis.",
+		organiser: "John Smith",
+		participants: ["Alice", "Bob"]
+	},
+	{
+		name: "Rust Study Group",
+		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id.",
+		organiser: "John Smith",
+		participants: ["Alice", "Bob", "Charlie"]
+	},
+	{
+		name: "Linux Installation Party",
+		description: "Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
+		organiser: "John Smith",
+		participants: ["Alice", "Bob", "Charlie", "Eve"]
+	},
+	{
+		name: "Semester Closing Party",
+		description: "Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
+		organiser: "Mary Tyler",
+		participants: ["Alice", "Bob", "Charlie", "Eve", "Mallory"]
+	},
+];
+
 function login(name) {
 	if (typeof localStorage.getItem('login') === 'string') {
 		console.error('Already logged in');
@@ -38,6 +71,7 @@ function updateLogin(id, role) {
 			if (e.target.tagName !== 'A') return;
 			login(e.target.innerText);
 		});
+		loginList.innerHTML = '';
 		userList.filter(u => u.role === role).forEach(user => {
 			const listElement = document.createElement('li');
 			const anchor = document.createElement('a');
@@ -65,6 +99,7 @@ function updateNav() {
 			anchor.innerText = 'Sign In';
 			anchor.setAttribute('href', './signin.html');
 		};
+		navList.innerHTML = '';
 		navList.appendChild(anchor);
 	};
 };
@@ -74,6 +109,14 @@ function render() {
 
 	updateLogin('studentBtnList', 'student');
 	updateLogin('orgBtnList', 'organiser');
+};
+
+const resetDataBtn = document.getElementById('mockBtn');
+if (resetDataBtn) {
+	resetDataBtn.addEventListener('click', () => {
+		localStorage.setItem('data', JSON.stringify(defaultEvents));
+		render();
+	});
 };
 
 render();
