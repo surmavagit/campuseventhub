@@ -18,31 +18,36 @@ const defaultEvents = [
 		name: "WebDev Workshop",
 		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
 		organiser: "John Smith",
-		participants: ["Alice"]
+		participants: [],
+		date: "01.07.2027"
 	},
 	{
 		name: "Open Lecture: Statistics and AI",
 		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis.",
 		organiser: "John Smith",
-		participants: ["Alice", "Bob"]
+		participants: ["Alice", "Dave"],
+		date: "03.07.2026"
 	},
 	{
 		name: "Rust Study Group",
 		description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id.",
 		organiser: "John Smith",
-		participants: ["Alice", "Bob", "Charlie"]
+		participants: ["Alice", "Bob", "Charlie"],
+		date: "13.07.2026"
 	},
 	{
 		name: "Linux Installation Party",
 		description: "Consectetur adipiscing elit quisque faucibus ex sapien vitae. Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
 		organiser: "John Smith",
-		participants: ["Alice", "Bob", "Charlie", "Eve"]
+		participants: ["Alice", "Bob", "Charlie", "Eve"],
+		date: "31.07.2026"
 	},
 	{
 		name: "Semester Closing Party",
 		description: "Ex sapien vitae pellentesque sem placerat in id. Placerat in id cursus mi pretium tellus duis. Pretium tellus duis convallis tempus leo eu aenean.",
 		organiser: "Mary Tyler",
-		participants: ["Alice", "Bob", "Charlie", "Eve", "Mallory"]
+		participants: ["Alice", "Bob", "Charlie", "Eve", "Mallory"],
+		date: "01.09.2026"
 	},
 ];
 
