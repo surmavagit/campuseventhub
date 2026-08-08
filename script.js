@@ -104,8 +104,21 @@ function updateNav() {
 	};
 };
 
+function updateEventList() {
+	const eventList = document.getElementById('eventList');
+	if (eventList) {
+		eventList.innerHTML = '';
+		for (evt of defaultEvents) {
+			const listElement = document.createElement('li');
+			listElement.innerText = evt.name;
+			eventList.appendChild(listElement);
+		};
+	};
+};
+
 function render() {
 	updateNav();
+	updateEventList();
 
 	updateLogin('studentBtnList', 'student');
 	updateLogin('orgBtnList', 'organiser');
