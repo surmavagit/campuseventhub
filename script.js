@@ -91,31 +91,69 @@ function updateLogin(id, role) {
 
 function updateNav() {
 	const navList = document.getElementById('navList');
-	const loggedIn = (typeof localStorage.getItem('login')) === 'string';
+
 	if (navList) {
-		const anchor = document.createElement('a');
+		navList.innerHTML = '';
+
+		const user = localStorage.getItem('login');
+		const loggedIn = (typeof user === 'string');
+
 		if (loggedIn) {
-			anchor.innerText = 'Sign Out';
-			anchor.setAttribute('href', './index.html');
-			anchor.addEventListener('click', () => {
+			const myEvents = document.createElement('a');
+			myEvents.innerText = 'My Events';
+			myEvents.setAttribute('href', './myevents.html');
+			navList.appendChild(myEvents);
+		};
+
+		const signInOut = document.createElement('a');
+		if (loggedIn) {
+			signInOut.innerText = 'Sign Out';
+			signInOut.setAttribute('href', './index.html');
+			signInOut.addEventListener('click', () => {
 				localStorage.removeItem('login');
 			});
 		} else {
-			anchor.innerText = 'Sign In';
-			anchor.setAttribute('href', './signin.html');
+			signInOut.innerText = 'Sign In';
+			signInOut.setAttribute('href', './signin.html');
 		};
-		navList.innerHTML = '';
-		navList.appendChild(anchor);
+		navList.appendChild(signInOut);
 	};
 };
 
-function updateEventList() {
+function updateEventList(sort = 'default') {
 	const eventList = document.getElementById('eventList');
 	if (eventList) {
 		eventList.innerHTML = '';
-		for (evt of defaultEvents) {
+
+		let sortedEvents;
+		switch (sort) {
+			case 'date':
+				sortedEvents = defaultEvents.toSorted((a, b) => {
+					const aDate = a.date.split('.').map(str => Number(str));
+					const bDate = b.date.split('.').map(str => Number(str));
+
+					const year = aDate[2] - bDate[2];
+					if (year != 0) return year;
+
+					const month = aDate[1] - bDate[1];
+					if (month != 0) return month;
+
+					return aDate[0] - bDate[0];
+				});
+				break;
+			case 'name':
+				sortedEvents = defaultEvents.toSorted((a, b) => a.name.localeCompare(b.name));
+				break;
+			case 'participants':
+				sortedEvents = defaultEvents.toSorted((a, b) => a.participants.length - b.participants.length);
+				break;
+			default:
+				sortedEvents = defaultEvents;
+		};
+
+		for (evt of sortedEvents) {
 			const listElement = document.createElement('li');
-			listElement.innerText = evt.name;
+			listElement.innerHTML = `<span class='eventName'>${evt.name}</span> <span class='eventDate'>${evt.date}</span> <span class='eventParticipants'>${evt.participants.length}</span>`;
 			eventList.appendChild(listElement);
 		};
 	};
