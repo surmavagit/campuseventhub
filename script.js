@@ -188,13 +188,38 @@ function updateEventPage() {
 
 		eventPage.appendChild(header);
 		eventPage.appendChild(description);
+
+		const login = localStorage.getItem('login');
+		if (typeof login === 'string') {
+			const studentStatus = userList.find(u => u.name === login).role === 'student';
+			if (studentStatus) {
+				const registered = event.participants.includes(login);
+				const registerBtn = document.createElement('button');
+				registerBtn.innerText = registered ? 'Unregister' : 'Register';
+				registerBtn.addEventListener('click', () => {
+					const idx = event.participants.indexOf(login);
+					if (idx != -1) { // unregister
+						event.participants.splice(idx, 1);
+					} else { // register
+						event.participants.push(login);
+					}
+					localStorage.setItem('data', JSON.stringify(events));
+					updateEventPage();
+				});
+				eventPage.appendChild(registerBtn);
+			} else {
+				const organiser = event.organiser === login;
+				console.log(organiser ? 'organiser' : 'not organiser');
+			};
+
+		};
 	};
 };
 
 function render() {
 	updateNav();
-	updateEventPage();
 	updateEventList();
+	updateEventPage();
 
 	updateLogin('studentBtnList', 'student');
 	updateLogin('orgBtnList', 'organiser');
