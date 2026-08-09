@@ -229,6 +229,10 @@ function updateEventPage() {
 		header.innerText = event.name;
 		eventPage.appendChild(header);
 
+		const eventDate = document.createElement('p');
+		eventDate.innerText = event.date;
+		eventPage.appendChild(eventDate);
+
 		const description = document.createElement('p');
 		description.innerText = event.description;
 		eventPage.appendChild(description);
@@ -239,7 +243,10 @@ function updateEventPage() {
 
 		const login = localStorage.getItem('login');
 		if (typeof login === 'string') {
-			const studentStatus = userList.find(u => u.name === login).role === 'student';
+			const user = userList.find(u => u.name === login);
+			if (!user) return;
+
+			const studentStatus = user.role === 'student';
 			if (studentStatus) {
 				const registered = event.participants.includes(login);
 				const registerBtn = document.createElement('button');
@@ -262,6 +269,12 @@ function updateEventPage() {
 					participants.innerText = 'Participants:'
 					eventPage.appendChild(participants);
 
+					if (event.participants.length === 0) {
+						const nobody = document.createElement('p');
+						nobody.innerText = 'Nobody has registered for this event yet.';
+						eventPage.appendChild(nobody);
+						return;
+					};
 					const studentList = document.createElement('ul');
 					for (let student of event.participants) {
 						const studentElement = document.createElement('li');
@@ -269,9 +282,8 @@ function updateEventPage() {
 						studentList.appendChild(studentElement);
 					};
 					eventPage.appendChild(studentList);
-				}
+				};
 			};
-
 		};
 	};
 };
