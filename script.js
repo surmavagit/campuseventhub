@@ -224,13 +224,18 @@ function updateEventPage() {
 		if (!event) return;
 
 		eventPage.innerHTML = '';
+
 		const header = document.createElement('h2')
 		header.innerText = event.name;
+		eventPage.appendChild(header);
+
 		const description = document.createElement('p');
 		description.innerText = event.description;
-
-		eventPage.appendChild(header);
 		eventPage.appendChild(description);
+
+		const organiser = document.createElement('p');
+		organiser.innerText = `Organised by ${event.organiser}`
+		eventPage.appendChild(organiser);
 
 		const login = localStorage.getItem('login');
 		if (typeof login === 'string') {
@@ -252,7 +257,19 @@ function updateEventPage() {
 				eventPage.appendChild(registerBtn);
 			} else {
 				const organiser = event.organiser === login;
-				console.log(organiser ? 'organiser' : 'not organiser');
+				if (organiser) {
+					const participants = document.createElement('p')
+					participants.innerText = 'Participants:'
+					eventPage.appendChild(participants);
+
+					const studentList = document.createElement('ul');
+					for (let student of event.participants) {
+						const studentElement = document.createElement('li');
+						studentElement.innerText = student;
+						studentList.appendChild(studentElement);
+					};
+					eventPage.appendChild(studentList);
+				}
 			};
 
 		};
