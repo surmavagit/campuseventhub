@@ -123,12 +123,16 @@ function updateNav() {
 function updateEventList(sort = 'default') {
 	const eventList = document.getElementById('eventList');
 	if (eventList) {
+		const data = localStorage.getItem('data');
+		if ((typeof data) !== 'string') return;
+		const events = JSON.parse(data);
+
 		eventList.innerHTML = '';
 
 		let sortedEvents;
 		switch (sort) {
 			case 'date':
-				sortedEvents = defaultEvents.toSorted((a, b) => {
+				sortedEvents = events.toSorted((a, b) => {
 					const aDate = a.date.split('.').map(str => Number(str));
 					const bDate = b.date.split('.').map(str => Number(str));
 
@@ -142,25 +146,54 @@ function updateEventList(sort = 'default') {
 				});
 				break;
 			case 'name':
-				sortedEvents = defaultEvents.toSorted((a, b) => a.name.localeCompare(b.name));
+				sortedEvents = events.toSorted((a, b) => a.name.localeCompare(b.name));
 				break;
 			case 'participants':
-				sortedEvents = defaultEvents.toSorted((a, b) => a.participants.length - b.participants.length);
+				sortedEvents = events.toSorted((a, b) => a.participants.length - b.participants.length);
 				break;
 			default:
-				sortedEvents = defaultEvents;
+				sortedEvents = events;
 		};
 
-		for (evt of sortedEvents) {
+		for (let evt of sortedEvents) {
 			const listElement = document.createElement('li');
-			listElement.innerHTML = `<span class='eventName'>${evt.name}</span> <span class='eventDate'>${evt.date}</span> <span class='eventParticipants'>${evt.participants.length}</span>`;
+			listElement.innerHTML = `<a href='./event.html' class='eventName'>${evt.name}</a> <span class='eventDate'>${evt.date}</span> <span class='eventParticipants'>${evt.participants.length}</span>`;
+			listElement.addEventListener('click', e => {
+				if (e.target.tagName !== 'A') return;
+				localStorage.setItem('event', evt.name);
+			});
 			eventList.appendChild(listElement);
 		};
 	};
 };
 
+function updateEventPage() {
+	const eventPage = document.getElementById('eventPage');
+	if (eventPage) {
+		const data = localStorage.getItem('data');
+		if (typeof data !== 'string') return;
+
+		const eventName = localStorage.getItem('event');
+		if (typeof eventName !== 'string') return;
+
+		const events = JSON.parse(data);
+		const event = events.find(e => eventName === e.name);
+		if (!event) return;
+
+		eventPage.innerHTML = '';
+		const header = document.createElement('h2')
+		header.innerText = event.name;
+		const description = document.createElement('p');
+		description.innerText = event.description;
+
+		eventPage.appendChild(header);
+		eventPage.appendChild(description);
+	};
+};
+
 function render() {
 	updateNav();
+	updateEventPage();
 	updateEventList();
 
 	updateLogin('studentBtnList', 'student');
