@@ -80,7 +80,7 @@ function updateLogin(id, role) {
 		userList.filter(u => u.role === role).forEach(user => {
 			const listElement = document.createElement('li');
 			const anchor = document.createElement('a');
-			anchor.setAttribute('href', './index.html');
+			anchor.setAttribute('href', './myevents.html');
 			anchor.innerText = user.name;
 			listElement.appendChild(anchor);
 			loginList.appendChild(listElement);
@@ -120,6 +120,56 @@ function updateNav() {
 	};
 };
 
+function generateEventList(events, sort, filter) {
+	let filteredEvents;
+	const login = localStorage.getItem('login');
+	if (!filter || (typeof login !== 'string')) {
+		filteredEvents = events;
+	} else {
+		if (userList.find(u => u.name === login).role === 'student') {
+			filteredEvents = events.filter(e => e.participants.includes(login));
+		} else {
+			filteredEvents = events.filter(e => e.organiser === login);
+		}
+	}
+
+	let sortedEvents;
+	switch (sort) {
+		case 'date':
+			sortedEvents = filteredEvents.toSorted((a, b) => {
+				const aDate = a.date.split('.').map(str => Number(str));
+				const bDate = b.date.split('.').map(str => Number(str));
+
+				const year = aDate[2] - bDate[2];
+				if (year != 0) return year;
+
+				const month = aDate[1] - bDate[1];
+				if (month != 0) return month;
+
+				return aDate[0] - bDate[0];
+			});
+			break;
+		case 'name':
+			sortedEvents = filteredEvents.toSorted((a, b) => a.name.localeCompare(b.name));
+			break;
+		case 'participants':
+			sortedEvents = filteredEvents.toSorted((a, b) => b.participants.length - a.participants.length);
+			break;
+		default:
+			sortedEvents = filteredEvents;
+	};
+
+	return sortedEvents.map(evt => {
+		const listElement = document.createElement('li');
+		listElement.innerHTML = `<a href='./event.html' class='eventName'>${evt.name}</a> <span class='eventDate'>${evt.date}</span> <span class='eventParticipants'>${evt.participants.length}</span>`;
+		listElement.addEventListener('click', e => {
+			if (e.target.tagName !== 'A') return;
+			localStorage.setItem('event', evt.name);
+		});
+		return listElement;
+	});
+};
+
 function updateEventList(sort = 'default') {
 	const eventList = document.getElementById('eventList');
 	if (eventList) {
@@ -129,41 +179,34 @@ function updateEventList(sort = 'default') {
 
 		eventList.innerHTML = '';
 
-		let sortedEvents;
-		switch (sort) {
-			case 'date':
-				sortedEvents = events.toSorted((a, b) => {
-					const aDate = a.date.split('.').map(str => Number(str));
-					const bDate = b.date.split('.').map(str => Number(str));
+		generateEventList(events, sort, false).forEach(e => {
+			eventList.appendChild(e);
+		});
+	};
+};
 
-					const year = aDate[2] - bDate[2];
-					if (year != 0) return year;
+function updateFilteredEventList(sort = 'default') {
+	const eventList = document.getElementById('filteredEventList');
+	if (eventList) {
+		const data = localStorage.getItem('data');
+		if ((typeof data) !== 'string') return;
+		const events = JSON.parse(data);
 
-					const month = aDate[1] - bDate[1];
-					if (month != 0) return month;
+		eventList.innerHTML = '';
 
-					return aDate[0] - bDate[0];
-				});
-				break;
-			case 'name':
-				sortedEvents = events.toSorted((a, b) => a.name.localeCompare(b.name));
-				break;
-			case 'participants':
-				sortedEvents = events.toSorted((a, b) => a.participants.length - b.participants.length);
-				break;
-			default:
-				sortedEvents = events;
-		};
+		generateEventList(events, sort, true).forEach(e => {
+			eventList.appendChild(e);
+		});
+	};
+};
 
-		for (let evt of sortedEvents) {
-			const listElement = document.createElement('li');
-			listElement.innerHTML = `<a href='./event.html' class='eventName'>${evt.name}</a> <span class='eventDate'>${evt.date}</span> <span class='eventParticipants'>${evt.participants.length}</span>`;
-			listElement.addEventListener('click', e => {
-				if (e.target.tagName !== 'A') return;
-				localStorage.setItem('event', evt.name);
-			});
-			eventList.appendChild(listElement);
-		};
+function addListControl() {
+	const listControl = document.getElementById('listControl');
+	if (listControl) {
+		listControl.addEventListener('change', e => {
+			updateEventList(e.target.value);
+			updateFilteredEventList(e.target.value);
+		});
 	};
 };
 
@@ -218,7 +261,9 @@ function updateEventPage() {
 
 function render() {
 	updateNav();
-	updateEventList();
+	addListControl();
+	updateEventList('date');
+	updateFilteredEventList('date');
 	updateEventPage();
 
 	updateLogin('studentBtnList', 'student');
