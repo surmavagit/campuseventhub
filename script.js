@@ -95,20 +95,25 @@ function updateNav() {
 	if (navList) {
 		navList.innerHTML = '';
 
+		const mainPage = document.createElement('a');
+		mainPage.innerText = 'Main Page';
+		mainPage.href = './index.html';
+		navList.appendChild(mainPage);
+
 		const user = localStorage.getItem('login');
 		const loggedIn = (typeof user === 'string');
 
 		if (loggedIn) {
 			const myEvents = document.createElement('a');
 			myEvents.innerText = 'My Events';
-			myEvents.setAttribute('href', './myevents.html');
+			myEvents.href = './myevents.html';
 			navList.appendChild(myEvents);
 		};
 
 		const signInOut = document.createElement('a');
 		if (loggedIn) {
 			signInOut.innerText = 'Sign Out';
-			signInOut.setAttribute('href', './index.html');
+			signInOut.href = './index.html';
 			signInOut.addEventListener('click', () => {
 				localStorage.removeItem('login');
 			});
