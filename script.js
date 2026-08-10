@@ -202,6 +202,11 @@ function updateFilteredEventList(sort = 'default') {
 		generateEventList(events, sort, true).forEach(e => {
 			eventList.appendChild(e);
 		});
+
+		const createEvent = document.createElement('a');
+		createEvent.innerText = 'Create new event';
+		createEvent.href = './eventform.html';
+		eventList.appendChild(createEvent);
 	};
 };
 
@@ -303,12 +308,74 @@ function updateEventPage() {
 	};
 };
 
+function updateFormPage() {
+	const eventForm = document.getElementById('eventForm');
+	if (!eventForm) return;
+
+	const login = localStorage.getItem('login');
+	if (typeof login !== 'string') return;
+
+	const user = userList.find(u => u.name === login);
+	if (!user) return;
+
+	if (user.role !== 'organiser') return;
+
+	eventForm.innerHTML = '';
+
+	const heading = document.createElement('h2');
+	heading.innerText = 'Create New Event';
+	eventForm.appendChild(heading);
+
+	const form = document.createElement('form');
+	form.innerHTML = `
+<label for='name' >Name:</label>
+<input id='name' name='eventForm' required></input>
+<label for='description'>Description:</label>
+<textarea id='description' name='eventForm' rows='5' cols='80' required minlength='5'></textarea>
+<label for='date'>Date:</label>
+<input id='date' type='date' name='eventForm' required></input>
+`;
+	const submitBtn = document.createElement('input');
+	submitBtn.id = 'formBtn';
+	submitBtn.type = 'submit';
+	submitBtn.value = 'Submit';
+	submitBtn.addEventListener('click', e => {
+		e.preventDefault();
+
+		const validForm = document.querySelector('form').reportValidity();
+		if (!validForm) return;
+
+		const name = document.getElementById('name').value;
+		const descr = document.getElementById('description').value;
+		const date = document.getElementById('date').value;
+
+		const newEvent = {
+			name: name,
+			description: descr,
+			date: date,
+			organiser: login,
+			participants: []
+		};
+
+		const data = JSON.parse(localStorage.getItem('data'));
+		data.push(newEvent);
+		localStorage.setItem('data', JSON.stringify(data));
+
+		window.location.href = './index.html';
+	});
+
+	form.appendChild(submitBtn);
+	eventForm.appendChild(form);
+};
+
 function render() {
 	updateNav();
 	addListControl();
 	updateEventList('date');
 	updateFilteredEventList('date');
 	updateEventPage();
+	updateFormPage();
+
 
 	updateLogin('studentBtnList', 'student');
 	updateLogin('orgBtnList', 'organiser');
