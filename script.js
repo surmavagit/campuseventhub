@@ -303,6 +303,14 @@ function updateEventPage() {
 					localStorage.setItem('data', JSON.stringify(events));
 				});
 				eventPage.appendChild(deleteBtn);
+
+				const updateBtn = document.createElement('a');
+				updateBtn.innerText = 'Update this event';
+				updateBtn.href = './eventform.html';
+				updateBtn.addEventListener('click', () => {
+					localStorage.setItem('update', event.name);
+				});
+				eventPage.appendChild(updateBtn);
 			};
 		};
 	};
@@ -326,14 +334,30 @@ function updateFormPage() {
 	heading.innerText = 'Create New Event';
 	eventForm.appendChild(heading);
 
+	const defaults = {
+		name: '',
+		description: '',
+		date: ''
+	};
+	const update = localStorage.getItem('update');
+	if (typeof update === 'string') {
+		const data = JSON.parse(localStorage.getItem('data'));
+		const toupdate = data.find(e => e.name === update);
+		if (toupdate) {
+			defaults.name = toupdate.name;
+			defaults.description = toupdate.description;
+			defaults.date = toupdate.date;
+		};
+	};
+
 	const form = document.createElement('form');
 	form.innerHTML = `
 <label for='name' >Name:</label>
-<input id='name' name='eventForm' required></input>
+<input id='name' name='eventForm' value='${defaults.name}' required></input>
 <label for='description'>Description:</label>
-<textarea id='description' name='eventForm' rows='5' cols='80' required minlength='5'></textarea>
+<textarea id='description' name='eventForm' rows='5' cols='80' required minlength='5'>${defaults.description}</textarea>
 <label for='date'>Date:</label>
-<input id='date' type='date' name='eventForm' required></input>
+<input id='date' type='date' name='eventForm' value='${defaults.date}' required></input>
 `;
 	const submitBtn = document.createElement('input');
 	submitBtn.id = 'formBtn';
@@ -358,7 +382,14 @@ function updateFormPage() {
 		};
 
 		const data = JSON.parse(localStorage.getItem('data'));
-		data.push(newEvent);
+
+		if (typeof update === 'string') {
+			localStorage.removeItem('update');
+			data[data.findIndex(e => e.name === update)] = newEvent;
+		} else {
+			data.push(newEvent);
+		};
+
 		localStorage.setItem('data', JSON.stringify(data));
 
 		window.location.href = './index.html';
