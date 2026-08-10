@@ -112,7 +112,7 @@ function updateNav() {
 
 		const signInOut = document.createElement('a');
 		if (loggedIn) {
-			signInOut.innerText = 'Sign Out';
+			signInOut.innerText = `Sign Out (${user})`;
 			signInOut.href = './index.html';
 			signInOut.addEventListener('click', () => {
 				localStorage.removeItem('login');
@@ -267,19 +267,20 @@ function updateEventPage() {
 					updateEventPage();
 				});
 				eventPage.appendChild(registerBtn);
-			} else {
-				const organiser = event.organiser === login;
-				if (organiser) {
-					const participants = document.createElement('p')
-					participants.innerText = 'Participants:'
-					eventPage.appendChild(participants);
+				return;
+			};
 
-					if (event.participants.length === 0) {
-						const nobody = document.createElement('p');
-						nobody.innerText = 'Nobody has registered for this event yet.';
-						eventPage.appendChild(nobody);
-						return;
-					};
+			const organiser = event.organiser === login;
+			if (organiser) {
+				const participants = document.createElement('p')
+				participants.innerText = 'Participants:'
+				eventPage.appendChild(participants);
+
+				if (event.participants.length === 0) {
+					const nobody = document.createElement('p');
+					nobody.innerText = 'Nobody has registered for this event yet.';
+					eventPage.appendChild(nobody);
+				} else {
 					const studentList = document.createElement('ul');
 					for (let student of event.participants) {
 						const studentElement = document.createElement('li');
@@ -288,6 +289,15 @@ function updateEventPage() {
 					};
 					eventPage.appendChild(studentList);
 				};
+
+				const deleteBtn = document.createElement('a');
+				deleteBtn.innerText = 'Delete this event';
+				deleteBtn.href = './index.html';
+				deleteBtn.addEventListener('click', () => {
+					events.splice(events.findIndex(e => e.name === eventName), 1);
+					localStorage.setItem('data', JSON.stringify(events));
+				});
+				eventPage.appendChild(deleteBtn);
 			};
 		};
 	};
