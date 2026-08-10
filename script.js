@@ -344,6 +344,8 @@ function updateFormPage() {
 		const data = JSON.parse(localStorage.getItem('data'));
 		const toupdate = data.find(e => e.name === update);
 		if (toupdate) {
+			if (toupdate.organiser !== login) return;
+
 			defaults.name = toupdate.name;
 			defaults.description = toupdate.description;
 			defaults.date = toupdate.date;
