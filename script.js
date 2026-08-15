@@ -98,7 +98,9 @@ function updateNav() {
 		const mainPage = document.createElement('a');
 		mainPage.innerText = 'Main Page';
 		mainPage.href = './index.html';
-		navList.appendChild(mainPage);
+		const mainPageList = document.createElement('li');
+		mainPageList.appendChild(mainPage);
+		navList.appendChild(mainPageList);
 
 		const user = localStorage.getItem('login');
 		const loggedIn = (typeof user === 'string');
@@ -107,7 +109,9 @@ function updateNav() {
 			const myEvents = document.createElement('a');
 			myEvents.innerText = 'My Events';
 			myEvents.href = './myevents.html';
-			navList.appendChild(myEvents);
+			const myEventsList = document.createElement('li');
+			myEventsList.appendChild(myEvents);
+			navList.appendChild(myEventsList);
 		};
 
 		const signInOut = document.createElement('a');
@@ -121,7 +125,9 @@ function updateNav() {
 			signInOut.innerText = 'Sign In';
 			signInOut.setAttribute('href', './signin.html');
 		};
-		navList.appendChild(signInOut);
+		const signInOutList = document.createElement('li');
+		signInOutList.appendChild(signInOut);
+		navList.appendChild(signInOutList);
 	};
 };
 
