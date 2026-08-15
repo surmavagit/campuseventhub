@@ -204,6 +204,8 @@ function updateFilteredEventList(sort = 'default') {
 		const events = JSON.parse(data);
 
 		eventList.innerHTML = '';
+		const toDelete = document.getElementById('createEvt');
+		if (toDelete) toDelete.remove();
 
 		generateEventList(events, sort, true).forEach(e => {
 			eventList.appendChild(e);
