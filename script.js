@@ -381,10 +381,11 @@ function updateFormPage() {
 		const descr = document.getElementById('description').value;
 		const date = document.getElementById('date').value;
 
+		const dateRearranged = date.split('-').reverse().join('.');
 		const newEvent = {
 			name: name,
 			description: descr,
-			date: date,
+			date: dateRearranged,
 			organiser: login,
 			participants: []
 		};
