@@ -212,7 +212,8 @@ function updateFilteredEventList(sort = 'default') {
 		const createEvent = document.createElement('a');
 		createEvent.innerText = 'Create new event';
 		createEvent.href = './eventform.html';
-		eventList.appendChild(createEvent);
+		createEvent.id = 'createEvt';
+		document.querySelector('main').appendChild(createEvent);
 	};
 };
 
@@ -254,7 +255,10 @@ function updateEventPage() {
 		eventPage.appendChild(description);
 
 		const organiser = document.createElement('p');
-		organiser.innerText = `Organised by ${event.organiser}`
+		organiser.innerText = 'Organised by ';
+		const strong = document.createElement('strong');
+		strong.innerText = event.organiser;
+		organiser.appendChild(strong);
 		eventPage.appendChild(organiser);
 
 		const login = localStorage.getItem('login');
@@ -283,14 +287,15 @@ function updateEventPage() {
 
 			const organiser = event.organiser === login;
 			if (organiser) {
-				const participants = document.createElement('p')
+				const participSection = document.createElement('section');
+				const participants = document.createElement('h3')
 				participants.innerText = 'Participants:'
-				eventPage.appendChild(participants);
+				participSection.appendChild(participants);
 
 				if (event.participants.length === 0) {
 					const nobody = document.createElement('p');
 					nobody.innerText = 'Nobody has registered for this event yet.';
-					eventPage.appendChild(nobody);
+					participSection.appendChild(nobody);
 				} else {
 					const studentList = document.createElement('ul');
 					for (let student of event.participants) {
@@ -298,8 +303,12 @@ function updateEventPage() {
 						studentElement.innerText = student;
 						studentList.appendChild(studentElement);
 					};
-					eventPage.appendChild(studentList);
+					participSection.appendChild(studentList);
 				};
+				eventPage.appendChild(participSection);
+
+				const eventControl = document.createElement('div');
+				eventControl.id = 'eventControlBox';
 
 				const deleteBtn = document.createElement('a');
 				deleteBtn.innerText = 'Delete this event';
@@ -308,7 +317,7 @@ function updateEventPage() {
 					events.splice(events.findIndex(e => e.name === eventName), 1);
 					localStorage.setItem('data', JSON.stringify(events));
 				});
-				eventPage.appendChild(deleteBtn);
+				eventControl.appendChild(deleteBtn);
 
 				const updateBtn = document.createElement('a');
 				updateBtn.innerText = 'Update this event';
@@ -316,7 +325,8 @@ function updateEventPage() {
 				updateBtn.addEventListener('click', () => {
 					localStorage.setItem('update', event.name);
 				});
-				eventPage.appendChild(updateBtn);
+				eventControl.appendChild(updateBtn);
+				eventPage.appendChild(eventControl);
 			};
 		};
 	};
@@ -363,7 +373,7 @@ function updateFormPage() {
 <label for='name' >Name:</label>
 <input id='name' name='eventForm' value='${defaults.name}' required></input>
 <label for='description'>Description:</label>
-<textarea id='description' name='eventForm' rows='5' cols='80' required minlength='5'>${defaults.description}</textarea>
+<textarea id='description' name='eventForm' rows='5' required minlength='5'>${defaults.description}</textarea>
 <label for='date'>Date:</label>
 <input id='date' type='date' name='eventForm' value='${defaults.date}' required></input>
 `;
